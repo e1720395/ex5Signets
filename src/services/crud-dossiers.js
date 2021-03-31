@@ -20,11 +20,27 @@ export async function creer(uid, dossier) {
  * @param {String} uid identifiant d'utilisateur Firebase
  * @returns {Promise<any[]>} Promesse avec le tableau des documents de dossiers
  */
-export async function lireTout(uid) {
+export async function lireTout(uid,chiffreTrier) {
   const dossiers = [];
+
+  const choixTrier = [
+    {
+      cham: "datemodif",
+      ordre: "desc"
+    },
+    {
+      cham: "nom",
+      ordre: "asc"
+    },
+    {
+      cham: "nom",
+      ordre: "desc"
+    },
+  ]
+
   /************************************************************** Exercice #5 : question A **************************/
   // Modifier très légèrement la ligne suivante
-  const reponse = await firestore.collection(utilRef).doc(uid).collection(dossRef).get();
+  const reponse = await firestore.collection(utilRef).doc(uid).collection(dossRef).orderBy(choixTrier[chiffreTrier].cham,choixTrier[chiffreTrier].ordre).get();
   reponse.forEach(
     doc => {
       dossiers.push({id: doc.id, ...doc.data()})
@@ -41,7 +57,10 @@ export async function lireTout(uid) {
  */
 export async function supprimer(uid, idd) {
   /************************************************************** Exercice #5 : question B **************************/
+  const instructionDel = firestore.collection(utilRef).doc(uid).collection(dossRef).doc(idd).delete();
+ 
   // Une seule ligne de code suffit
+  return await instructionDel;
   // return await [votre instruction pour supprimer le dossier de l'utilisateur connecté dans Firestore ici];
 }
 
